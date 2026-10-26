@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outfit } from "next/font/google";
 import styles from "./HomeInternet.module.css";
 
@@ -15,38 +14,18 @@ const outfit = Outfit({
 type TabKey = "popular" | "gaming";
 
 type Plan = {
-  id: number;
+  _id?: string;
+  id: string;
+  name: string;
   speed: number;
   price: number;
+  image: string;
+  features: string[];
 };
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "popular", label: "Popular Packages" },
   { key: "gaming", label: "Best for Gaming" },
-];
-
-const PLANS: Record<TabKey, Plan[]> = {
-  popular: [
-    { id: 1, speed: 25, price: 500 },
-    { id: 2, speed: 35, price: 525 },
-    { id: 3, speed: 40, price: 600 },
-    { id: 4, speed: 25, price: 500 },
-    { id: 5, speed: 35, price: 525 },
-    { id: 6, speed: 40, price: 600 },
-  ],
-  gaming: [
-    { id: 7, speed: 50, price: 500 },
-    { id: 8, speed: 80, price: 525 },
-    { id: 9, speed: 100, price: 600 },
-  ],
-};
-
-const FEATURES = [
-  "Bandwidth Shared (1:8 Ratio)",
-  "Optical Fiber Connection",
-  "Connection Charge Free",
-  "24/7 Customer Support",
-  "Public IP : Not Available",
 ];
 
 function CheckIcon() {
@@ -79,7 +58,6 @@ function CartIcon() {
   );
 }
 
-// Hero Section Component
 function HeroSection({
   title,
   description,
@@ -91,7 +69,6 @@ function HeroSection({
 }) {
   return (
     <div className="relative h-[40vh] min-h-65 w-full overflow-hidden bg-slate-800">
-      {/* Background Image Container */}
       <div className="absolute inset-0 z-0 h-full w-full">
         <Image
           src={heroImage}
@@ -101,11 +78,9 @@ function HeroSection({
           sizes="100vw"
           className="object-cover object-center"
         />
-        {/* Dark Overlay */}
         <div className="absolute inset-0 z-1 bg-black/50" />
       </div>
 
-      {/* Content */}
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
         <h1 className="mb-4 text-2xl font-bold tracking-tight text-gray-50 sm:text-3xl md:text-5xl">
           {title}
@@ -121,28 +96,88 @@ function HeroSection({
 type HomeInternetProps = {
   personImage?: string;
   heroImage?: string;
-  requestPath?: string;
 };
 
 export default function HomeInternet({
   personImage = "/img/person-laptop.jpg",
   heroImage = "/img/bg-hero.jpg",
-  requestPath = "/request-connection",
 }: HomeInternetProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("popular");
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Modal State
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [formData, setFormData] = useState({ customerName: "", email: "", phone: "", address: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+
+  useEffect(() => {
+    fetch("/api/plans")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data)) {
+          const formattedPlans = data.data.map((plan: any) => {
+            const speedMatch = plan.name.match(/(\d+)\s*Mbps/i);
+            const speed = speedMatch ? parseInt(speedMatch[1], 10) : 25;
+            return { ...plan, speed };
+          });
+          setPlans(formattedPlans);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch plans", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPlan) return;
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId: selectedPlan.id,
+          planName: selectedPlan.name,
+          price: selectedPlan.price,
+          ...formData,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to submit order");
+
+      setSuccessMsg("Plan ordered successfully! We will contact you soon.");
+      setTimeout(() => {
+        setSelectedPlan(null);
+        setSuccessMsg("");
+        setFormData({ customerName: "", email: "", phone: "", address: "" });
+      }, 2500);
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const popularPlans = plans.filter((p) => p.speed < 50);
+  const gamingPlans = plans.filter((p) => p.speed >= 50);
+
+  const displayedPlans = activeTab === "popular" 
+    ? (popularPlans.length > 0 ? popularPlans : plans) 
+    : (gamingPlans.length > 0 ? gamingPlans : plans.slice(0, 3));
 
   return (
     <div className={`${outfit.className} min-h-screen bg-white`}>
-      {/* Hero Banner Section */}
       <HeroSection
         title="Home Internet Packages"
         description="Choose high-speed optical fiber plans designed for fast browsing, seamless streaming, and gaming."
         heroImage={heroImage}
       />
 
-      {/* Main Content Area */}
       <section className="mx-auto w-full max-w-7xl overflow-x-clip px-4 py-16 md:py-20">
-        {/* Tabs */}
         <div
           role="tablist"
           aria-label="Package categories"
@@ -162,93 +197,168 @@ export default function HomeInternet({
           ))}
         </div>
 
-        {/* Plans */}
-        <div
-          role="tabpanel"
-          className="mx-auto mt-12 grid max-w-[274px] grid-cols-1 gap-9 md:mt-22 md:max-w-5xl md:grid-cols-3 md:gap-7"
-        >
-          {PLANS[activeTab].map((plan) => (
-            <article
-              key={plan.id}
-              className={`${styles.plan} relative mx-auto w-full max-w-[274px] md:max-w-none`}
-            >
-              <span className={styles.stripe} aria-hidden="true" />
-
-              <div
-                className={`${styles.shape} relative flex min-h-[290px] flex-col px-7 pb-6 pt-9`}
+        {loading ? (
+          <div className="py-20 text-center text-neutral-500">Loading packages from database...</div>
+        ) : (
+          <div
+            role="tabpanel"
+            className="mx-auto mt-12 grid max-w-[274px] grid-cols-1 gap-9 md:mt-22 md:max-w-5xl md:grid-cols-3 md:gap-7"
+          >
+            {displayedPlans.map((plan) => (
+              <article
+                key={plan._id || plan.id}
+                className={`${styles.plan} relative mx-auto w-full max-w-[274px] md:max-w-none`}
               >
-                {/* Rising purple layer + photo */}
-                <div className={styles.wipe} aria-hidden="true">
-                  <Image
-                    src={personImage}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className={`${styles.photo} object-cover object-[78%_100%]`}
+                <span className={styles.stripe} aria-hidden="true" />
+
+                <div
+                  className={`${styles.shape} relative flex min-h-[290px] flex-col px-7 pb-6 pt-9`}
+                >
+                  <div className={styles.wipe} aria-hidden="true">
+                    <Image
+                      src={plan.image || personImage}
+                      alt=""
+                      fill
+                      sizes="(min-width: 768px) 33vw, 100vw"
+                      className={`${styles.photo} object-cover object-[78%_100%]`}
+                    />
+                  </div>
+
+                  <div
+                    className={`${styles.circle} relative z-10 mx-auto flex h-32 w-32 shrink-0 flex-col items-center rounded-full bg-white pt-4`}
+                  >
+                    <span
+                      className={`${styles.speed} text-[55px] font-bold leading-none text-[#7bb436]`}
+                    >
+                      {plan.speed}
+                    </span>
+                    <span className="mt-1 text-[13.5px] font-medium leading-4 text-[#727272]">
+                      Mbps
+                    </span>
+                    <span className="mt-0.5 text-[8.25px] font-semibold leading-3 text-[#727272]">
+                      (24 Hours || Shared)
+                    </span>
+                  </div>
+
+                  <h3
+                    className={`${styles.t} relative z-10 mt-6 text-center text-[23px] font-semibold leading-7 text-[#203c23]`}
+                  >
+                    ৳{plan.price} / Month
+                  </h3>
+                  <div
+                    className={`${styles.rule} relative z-10 mt-3.5 h-px w-full bg-[#dbe9cc] transition-colors duration-300`}
+                  />
+
+                  <ul className="relative z-10 mt-4.5 flex flex-col gap-3.5">
+                    {plan.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className={`${styles.t} flex h-5.5 items-center gap-2.5 text-[13.5px] text-[#727272]`}
+                      >
+                        <CheckIcon />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="absolute bottom-6 right-7 z-20 h-12 w-12">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPlan(plan)}
+                      aria-label={`Get connection – ${plan.speed} Mbps`}
+                      className={`${styles.cart} peer flex h-full w-full items-center justify-center rounded-full focus-visible:outline-none cursor-pointer`}
+                    >
+                      <CartIcon />
+                    </button>
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute right-full top-1/2 mr-1.25 -translate-y-1/2 translate-x-3 whitespace-nowrap rounded-md bg-[#7bb436] px-2.75 py-1.75 text-[12.75px] font-medium leading-5 text-white opacity-0 transition-[opacity,transform,clip-path] duration-500 ease-out [clip-path:inset(0_0_0_100%)] peer-hover:translate-x-0 peer-hover:opacity-100 peer-hover:[clip-path:inset(0)] peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100 peer-focus-visible:[clip-path:inset(0)]"
+                    >
+                      Get Connection
+                    </span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Checkout Modal */}
+      {selectedPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b pb-3">
+              <h3 className="text-lg font-bold text-[#1c3a1f]">Subscribe to {selectedPlan.name}</h3>
+              <button onClick={() => setSelectedPlan(null)} className="text-neutral-500 hover:text-black">✕</button>
+            </div>
+
+            {successMsg ? (
+              <div className="my-6 rounded-xl bg-emerald-50 p-4 text-center text-sm font-medium text-emerald-600">
+                {successMsg}
+              </div>
+            ) : (
+              <form onSubmit={handleOrderSubmit} className="mt-4 space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-600">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.customerName}
+                    onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
+                    className="w-full rounded-lg border px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#7bb436]"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-600">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full rounded-lg border px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#7bb436]"
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-600">Phone Number</label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full rounded-lg border px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#7bb436]"
+                    placeholder="017XXXXXXXX"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-600">Installation Address</label>
+                  <textarea
+                    required
+                    rows={2}
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    className="w-full rounded-lg border px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#7bb436]"
+                    placeholder="House, Road, Area, City"
                   />
                 </div>
 
-                {/* Speed circle */}
-                <div
-                  className={`${styles.circle} relative z-10 mx-auto flex h-32 w-32 shrink-0 flex-col items-center rounded-full bg-white pt-4`}
-                >
-                  <span
-                    className={`${styles.speed} text-[55px] font-bold leading-none text-[#7bb436]`}
+                <div className="flex items-center justify-between pt-2">
+                  <span className="font-semibold text-neutral-700">Total: ৳{selectedPlan.price}/mo</span>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="rounded-lg bg-[#7bb436] px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 cursor-pointer"
                   >
-                    {plan.speed}
-                  </span>
-                  <span className="mt-1 text-[13.5px] font-medium leading-4 text-[#727272]">
-                    Mbps
-                  </span>
-                  <span className="mt-0.5 text-[8.25px] font-semibold leading-3 text-[#727272]">
-                    (24 Hours || Shared)
-                  </span>
+                    {submitting ? "Submitting..." : "Confirm Order"}
+                  </button>
                 </div>
-
-                {/* Price */}
-                <h3
-                  className={`${styles.t} relative z-10 mt-6 text-center text-[23px] font-semibold leading-7 text-[#203c23]`}
-                >
-                  ৳{plan.price} / Month
-                </h3>
-                <div
-                  className={`${styles.rule} relative z-10 mt-3.5 h-px w-full bg-[#dbe9cc] transition-colors duration-300`}
-                />
-
-                {/* Features */}
-                <ul className="relative z-10 mt-4.5 flex flex-col gap-3.5">
-                  {FEATURES.map((feature) => (
-                    <li
-                      key={feature}
-                      className={`${styles.t} flex h-5.5 items-center gap-2.5 text-[13.5px] text-[#727272]`}
-                    >
-                      <CheckIcon />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Cart button + tooltip */}
-                <div className="absolute bottom-6 right-7 z-20 h-12 w-12">
-                  <Link
-                    href={`${requestPath}?package=${plan.id}`}
-                    aria-label={`Get connection – ${plan.speed} Mbps`}
-                    className={`${styles.cart} peer flex h-full w-full items-center justify-center rounded-full focus-visible:outline-none`}
-                  >
-                    <CartIcon />
-                  </Link>
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute right-full top-1/2 mr-1.25 -translate-y-1/2 translate-x-3 whitespace-nowrap rounded-md bg-[#7bb436] px-2.75 py-1.75 text-[12.75px] font-medium leading-5 text-white opacity-0 transition-[opacity,transform,clip-path] duration-500 ease-out [clip-path:inset(0_0_0_100%)] peer-hover:translate-x-0 peer-hover:opacity-100 peer-hover:[clip-path:inset(0)] peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100 peer-focus-visible:[clip-path:inset(0)]"
-                  >
-                    Get Connection
-                  </span>
-                </div>
-              </div>
-            </article>
-          ))}
+              </form>
+            )}
+          </div>
         </div>
-      </section>
+      )}
     </div>
   );
 }

@@ -44,42 +44,8 @@ const iconClass = 'h-[18px] w-[18px]';
 
 const NAV_LINKS: NavLink[] = [
   { name: 'Home', href: '/' },
-  {
-    name: 'Packages & Internet',
-    footer: { label: 'Compare all packages', href: '/packages' },
-    items: [
-      {
-        name: 'Home Internet',
-        href: '/home-internet',
-        description: 'Reliable plans for everyday browsing and streaming',
-        icon: <Wifi className={iconClass} />,
-      },
-      {
-        name: 'Fiber Optics (FTTH)',
-        href: '/packages/fiber',
-        description: 'Fiber straight to your door for the fastest connection',
-        icon: <Zap className={iconClass} />,
-      },
-      {
-        name: 'Corporate & SME',
-        href: '/packages/corporate',
-        description: 'Dedicated connectivity for offices and teams',
-        icon: <Building2 className={iconClass} />,
-      },
-      {
-        name: 'IPTV & Entertainment',
-        href: '/packages/iptv',
-        description: 'Live channels and on-demand shows on your connection',
-        icon: <Tv className={iconClass} />,
-      },
-      {
-        name: 'Safe Internet & Security',
-        href: '/packages/security',
-        description: 'Protection and filtering for the whole household',
-        icon: <ShieldCheck className={iconClass} />,
-      },
-    ],
-  },
+  { name: 'Home Internet', href: '/home-internet' },
+  
   {
     name: 'Support & Billing',
     footer: { label: 'Contact the help desk', href: '/support' },
@@ -110,7 +76,31 @@ const NAV_LINKS: NavLink[] = [
       },
     ],
   },
-  { name: 'About Us', href: '/about-us' },
+  {
+    name: 'About A1C',
+    // footer: { label: 'Contact the help desk', href: '/support' },
+    items: [
+      {
+        name: 'About A1 Communication',
+        href: '/about-us',
+        description: 'Settle your invoice in a few taps',
+        icon: <CreditCard className={iconClass} />,
+      },
+      {
+        name: 'Mission & Vision',
+        href: '/mission-vision',
+        description: 'Check whether we reach your address',
+        icon: <MapPin className={iconClass} />,
+      },
+      {
+        name: 'CEO & Founder Message',
+        href: '/ceo',
+        description: 'Report a fault or get help at any hour',
+        icon: <Headphones className={iconClass} />,
+      },
+      
+    ],
+  },
   { name: 'Contact', href: '/contact' },
 ];
 
