@@ -52,7 +52,7 @@ const NAV_LINKS: NavLink[] = [
     items: [
       {
         name: 'Pay Bill Online',
-        href: '/bill-pay',
+        href: '/pay-bill',
         description: 'Settle your invoice in a few taps',
         icon: <CreditCard className={iconClass} />,
       },
