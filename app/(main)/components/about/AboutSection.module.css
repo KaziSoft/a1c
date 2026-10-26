@@ -1,0 +1,439 @@
+.section {
+  --canvas: #efeeea;
+  --forest: #1e3d1f;
+  --leaf: #ff6600;
+  --muted: #6f6f69;
+  --tile: #e2e1dc;
+  --crimson: #ff6600;
+  --blush: #ffd8c2;
+
+  background: var(--canvas);
+  color: var(--forest);
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  padding: 0 0 4rem 0; /* Navbar-এর সাথে gap কাটানোর জন্য top padding 0 */
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  height: 40vh;
+  min-height: 16rem;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 61, 31, 0.65);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.heroTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 48rem) {
+  .heroTitle {
+    font-size: 3.25rem;
+  }
+}
+
+.heroDescription {
+  font-size: 1rem;
+  color: #e2e1dc;
+  max-width: 42rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Container Grid */
+.container {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 0;
+}
+
+@media (min-width: 56rem) {
+  .container {
+    grid-template-columns: 26rem 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* ---------- Media composition ---------- */
+
+.media {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  aspect-ratio: 420 / 440;
+  margin-inline: auto;
+}
+
+.cover {
+  object-fit: cover;
+}
+
+/* Orange arch behind the main photo, peeking out on the right */
+.arch {
+  position: absolute;
+  top: 1.5%;
+  left: 49%;
+  width: 40%;
+  height: 52%;
+  border: 3px solid var(--crimson);
+  border-bottom: 0;
+  border-radius: 999px 999px 0 0;
+  animation: archSway 1.45s ease-in-out infinite;
+}
+
+@keyframes archSway {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+/* Tall photo: sloped top edge, soft rounded corners */
+.main {
+  position: absolute;
+  top: 2%;
+  left: 10%;
+  width: 70%;
+  height: 96%;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  clip-path: polygon(0 0, 100% 20%, 100% 100%, 0 100%);
+}
+
+/* Smaller photo overlapping the lower right */
+.inset {
+  position: absolute;
+  top: 41%;
+  left: 54%;
+  width: 42%;
+  aspect-ratio: 175 / 187;
+  overflow: hidden;
+  border: 5px solid #fff;
+  border-radius: 0.9rem;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(255, 102, 0, 0.4),
+    0 6px 22px rgba(255, 102, 0, 0.2);
+  animation: insetFloat 3s ease-in-out infinite;
+}
+
+@keyframes insetFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* "7 Years" badge with primary orange background */
+.experience {
+  position: absolute;
+  top: 13%;
+  left: 2%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 29%;
+  aspect-ratio: 120 / 122;
+  background: var(--leaf);
+  color: #fff;
+  text-align: center;
+}
+
+.experience::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 25%;
+  height: 16.5%;
+  background: var(--forest);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.years {
+  margin: 0.25rem 0 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.yearsLabel {
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+}
+
+/* ---------- Copy ---------- */
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--leaf);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Toggle badge */
+.badge {
+  position: relative;
+  display: inline-block;
+  width: 26px;
+  height: 12px;
+  border: 1.5px solid var(--leaf);
+  border-radius: 999px;
+}
+
+.badge::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 1px;
+  width: 14px;
+  border-radius: 999px;
+  background: var(--leaf);
+  animation: knob 2s ease-in-out infinite;
+}
+
+@keyframes knob {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+}
+
+.title {
+  margin: 0.5rem 0 0;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 56rem) {
+  .title {
+    font-size: 2.5rem;
+  }
+}
+
+.accent {
+  position: relative;
+  display: inline-block;
+  color: var(--leaf);
+}
+
+.underline {
+  position: absolute;
+  left: -1%;
+  top: 100%;
+  width: 97%;
+  height: 0.17em;
+  margin-top: -0.03em;
+  overflow: visible;
+  clip-path: inset(0 0 0 0);
+  animation: underlineSweep 3s linear infinite;
+}
+
+@keyframes underlineSweep {
+  0%,
+  33.33% {
+    clip-path: inset(0 0 0 0);
+  }
+  66.66% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.lead {
+  max-width: 30rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.78125rem;
+  line-height: 1.9;
+}
+
+/* ---------- Features ---------- */
+
+.features {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: 22.5rem;
+}
+
+@property --band {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.featureIcon {
+  --band: 0px;
+  --band-max: 4.5rem;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3.375rem;
+  height: 3.375rem;
+  border-radius: 0.25rem;
+  background: var(--tile);
+  color: var(--leaf);
+  transition: color 0.3s linear 0.05s;
+}
+
+.featureIcon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--leaf);
+  clip-path: polygon(
+    calc(0% - var(--band)) 100%,
+    calc(100% - var(--band)) 0%,
+    calc(100% + var(--band)) 0%,
+    var(--band) 100%
+  );
+  transition: --band 0.35s linear;
+}
+
+.feature:hover .featureIcon {
+  color: #fff;
+}
+
+.feature:hover .featureIcon::before {
+  --band: var(--band-max);
+}
+
+.featureTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.featureText {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.75;
+}
+
+/* ---------- Social proof ---------- */
+
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 2rem;
+}
+
+.pill {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--blush);
+  border-radius: 999px;
+  color: var(--leaf);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.avatars {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: -0.5rem;
+  overflow: hidden;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.avatars .avatar:first-child {
+  margin-left: 0;
+}
+
+.more {
+  z-index: 0;
+  color: var(--forest);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px rgba(255, 102, 0, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge::after,
+  .underline,
+  .arch,
+  .inset {
+    animation: none;
+  }
+  .featureIcon,
+  .featureIcon::before {
+    transition: none;
+  }
+}

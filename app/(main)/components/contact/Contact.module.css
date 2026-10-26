@@ -1,0 +1,333 @@
+.section {
+  --canvas: #efeeea;
+  --forest: #1e3d1f;
+  --leaf: #ff6600;
+  --muted: #6f6f69;
+  --tile: #e2e1dc;
+  --crimson: #ff6600;
+  --blush: #ffd8c2;
+
+  background: var(--canvas);
+  color: var(--forest);
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  padding: 0 0 4rem 0; /* Top padding 0 করে দেওয়া হয়েছে যেন Navbar-এর সাথে কোনো gap না থাকে */
+  margin: 0;
+  min-height: 100vh;
+}
+
+.hero {
+  position: relative;
+  height: 40vh;
+  min-height: 16rem;
+  width: 100%;
+  overflow: hidden;
+  margin: 0; /* Margin reset */
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 61, 31, 0.65);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.heroTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 48rem) {
+  .heroTitle {
+    font-size: 3.25rem;
+  }
+}
+
+.heroDescription {
+  font-size: 1rem;
+  color: #e2e1dc;
+  max-width: 42rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Main Container Grid */
+.container {
+  display: grid;
+  gap: 2.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem;
+}
+
+@media (min-width: 56rem) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Card Styling */
+.card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--tile);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--leaf);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge {
+  position: relative;
+  display: inline-block;
+  width: 26px;
+  height: 12px;
+  border: 1.5px solid var(--leaf);
+  border-radius: 999px;
+}
+
+.badge::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 1px;
+  width: 14px;
+  border-radius: 999px;
+  background: var(--leaf);
+  animation: knob 2s ease-in-out infinite;
+}
+
+@keyframes knob {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(7px); }
+}
+
+.cardTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: 0.75rem;
+}
+
+.cardSubtitle {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* Contact Info Items */
+.infoList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+@property --band {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.iconWrapper {
+  --band: 0px;
+  --band-max: 4.5rem;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  background: var(--tile);
+  color: var(--leaf);
+  transition: color 0.3s linear 0.05s;
+}
+
+.iconWrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--leaf);
+  clip-path: polygon(
+    calc(0% - var(--band)) 100%,
+    calc(100% - var(--band)) 0%,
+    calc(100% + var(--band)) 0%,
+    var(--band) 100%
+  );
+  transition: --band 0.35s linear;
+}
+
+.infoItem:hover .iconWrapper {
+  color: #ffffff;
+}
+
+.infoItem:hover .iconWrapper::before {
+  --band: var(--band-max);
+}
+
+.infoTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.infoDetails {
+  margin: 0.125rem 0 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.infoDesc {
+  margin: 0.125rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+/* Social Section */
+.socialTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: 0.75rem;
+}
+
+.socialGrid {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.socialBtn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: var(--tile);
+  color: var(--forest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.socialBtn:hover {
+  background: var(--leaf);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Map Container */
+.mapWrapper {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--tile);
+}
+
+.mapDirections {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: var(--canvas);
+  border-radius: 0.5rem;
+}
+
+.dirFlex {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.dirLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  color: var(--leaf);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.dirLink:hover {
+  opacity: 0.8;
+}
+
+.badgeGrid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.infoBadge {
+  text-align: center;
+  padding: 0.75rem;
+  background: var(--canvas);
+  border-radius: 0.5rem;
+}
+
+.badgeTitle {
+  color: var(--forest);
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+.badgeSub {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.cover {
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge::after {
+    animation: none;
+  }
+  .iconWrapper,
+  .iconWrapper::before {
+    transition: none;
+  }
+}

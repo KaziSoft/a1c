@@ -1,0 +1,232 @@
+/* ------------------------------------------------------------------
+   HomeInternet – card shape + hover animation (Scaled down 25%)
+   Original dimensions & rounded corners have been multiplied by 0.75.
+------------------------------------------------------------------- */
+
+.plan {
+  --shape: polygon(
+    0px 30px,
+    0.24px 26.19px,
+    0.97px 22.44px,
+    2.16px 18.82px,
+    3.81px 15.38px,
+    5.88px 12.17px,
+    8.34px 9.25px,
+    11.15px 6.67px,
+    14.27px 4.46px,
+    17.63px 2.67px,
+    21.2px 1.32px,
+    24.92px 0.44px,
+    28.71px 0.03px,
+    32.53px 0.11px,
+    36.31px 0.67px,
+    100% 67.5px,
+    100% calc(100% - 30px),
+    calc(100% - 0.37px) calc(100% - 25.31px),
+    calc(100% - 1.47px) calc(100% - 20.73px),
+    calc(100% - 3.27px) calc(100% - 16.38px),
+    calc(100% - 5.73px) calc(100% - 12.37px),
+    calc(100% - 8.79px) calc(100% - 8.79px),
+    calc(100% - 12.37px) calc(100% - 5.73px),
+    calc(100% - 16.38px) calc(100% - 3.27px),
+    calc(100% - 20.73px) calc(100% - 1.47px),
+    calc(100% - 25.31px) calc(100% - 0.37px),
+    calc(100% - 30px) 100%,
+    30px 100%,
+    25.31px calc(100% - 0.37px),
+    20.73px calc(100% - 1.47px),
+    16.38px calc(100% - 3.27px),
+    12.37px calc(100% - 5.73px),
+    8.79px calc(100% - 8.79px),
+    5.73px calc(100% - 12.37px),
+    3.27px calc(100% - 16.38px),
+    1.47px calc(100% - 20.73px),
+    0.37px calc(100% - 25.31px),
+    0px calc(100% - 30px)
+  );
+  --green: #ff6600;
+  --purple: #1e3d1f;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shape,
+.stripe {
+  clip-path: var(--shape);
+}
+
+.shape {
+  background-color: #e7f5d7;
+  isolation: isolate;
+  overflow: hidden;
+  transition: background-color 0s;
+}
+
+.plan:hover .shape,
+.plan:focus-within .shape {
+  background-color: var(--purple);
+  transition: background-color 0s 0.6s;
+}
+
+/* Green band above the slanted edge (-9px instead of -12px) */
+.stripe {
+  position: absolute;
+  inset: 0;
+  background: var(--green);
+  transform: translateY(-9px);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+  pointer-events: none;
+}
+
+.wipe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -22.5px;
+  height: calc(100% + 22.5px);
+  z-index: 0;
+  background: var(--purple);
+  clip-path: polygon(0 10.5px, 100% 85.5px, 100% 100%, 0 100%);
+  transform: translateY(100%);
+  opacity: 0.75;
+  transition:
+    transform 0.5s var(--ease),
+    opacity 0.5s var(--ease);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.photo {
+  opacity: 0.32;
+  mix-blend-mode: luminosity;
+}
+
+.plan:hover .stripe,
+.plan:focus-within .stripe {
+  opacity: 1;
+}
+
+.plan:hover .wipe,
+.plan:focus-within .wipe {
+  transform: translateY(0);
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+/* Speed circle ring offsets scaled by 75% */
+.circle {
+  box-shadow:
+    0 0 0 0 transparent,
+    0 0 0 0 transparent,
+    0 0 0 0 transparent;
+  transition:
+    box-shadow 0.35s var(--ease),
+    background-color 0.35s var(--ease),
+    border-color 0.35s var(--ease);
+}
+
+.plan:hover .circle,
+.plan:focus-within .circle {
+  background-color: #f5f3ef;
+  box-shadow:
+    0 0 0 2.25px #2d2142,
+    0 0 0 3.75px #1fa35c,
+    0 0 0 11.25px rgba(170, 205, 120, 0.42);
+}
+
+/* Text colour follows the rising layer */
+.t {
+  transition:
+    color 0.3s var(--ease) 0.15s,
+    background-color 0.3s var(--ease) 0.15s;
+}
+
+.plan:hover .t,
+.plan:focus-within .t {
+  color: #fff;
+}
+
+.plan:hover .rule,
+.plan:focus-within .rule {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.plan:hover .circle,
+.plan:focus-within .circle {
+  animation: ringBlink 1s ease-in-out 0.4s infinite;
+}
+
+@keyframes ringBlink {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2.25px #2d2142,
+      0 0 0 3.75px #1fa35c,
+      0 0 0 11.25px rgba(170, 205, 120, 0.42);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 2.25px #2d2142,
+      0 0 0 3.75px #35e08a,
+      0 0 0 16.5px rgba(170, 205, 120, 0.12);
+  }
+}
+
+.plan .circle:hover .speed {
+  animation: speedCycle 1.6s linear infinite;
+}
+
+@keyframes speedCycle {
+  0%,
+  42% {
+    color: #7bb436;
+  }
+
+  50%,
+  92% {
+    color: #ff6600;
+  }
+
+  100% {
+    color: #7bb436;
+  }
+}
+
+/* Cart button */
+.cart {
+  background: #fff;
+  color: var(--green);
+  transition:
+    background-color 0.3s var(--ease) 0.15s,
+    color 0.3s var(--ease);
+}
+
+.plan:hover .cart,
+.plan:focus-within .cart {
+  background: #f5f3ef;
+}
+
+.plan .cart:hover,
+.plan .cart:focus-visible {
+  background: var(--green);
+  color: #fff;
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stripe,
+  .wipe,
+  .circle,
+  .t,
+  .cart {
+    transition-duration: 0.01ms;
+    transition-delay: 0s;
+  }
+
+  .plan:hover .circle,
+  .plan:focus-within .circle,
+  .plan .circle:hover .speed {
+    animation: none;
+  }
+}

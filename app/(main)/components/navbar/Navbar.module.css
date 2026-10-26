@@ -1,0 +1,104 @@
+/* ---------- Navbar.module.css ---------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animateFadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+
+/* ---------- Self Care Portal button ----------
+   Rest: a white diamond covers the orange button, text is orange.
+   Hover/focus: the diamond shrinks to nothing, revealing the orange, and the
+   text turns white. Leaving grows the diamond back. */
+@property --portal-diamond {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 116px;
+}
+
+.portalButton {
+  --portal-orange: #ff6600;
+  --portal-diamond-max: 7.25rem;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  overflow: hidden;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid #dcdfcc;
+  border-radius: 6px;
+  background: var(--portal-orange);
+  color: var(--portal-orange);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.26s linear;
+}
+
+/* Full-width variant (mobile sheet): the diamond must reach the far corners,
+   so its starting size is larger. */
+.portalButtonFull {
+  --portal-diamond-max: 14rem;
+  display: flex;
+  width: 100%;
+  max-width: 24rem;
+  margin-inline: auto;
+  padding-block: 0.9rem;
+  font-size: 1rem;
+}
+
+.portalButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #fff;
+  --portal-diamond: var(--portal-diamond-max);
+  clip-path: polygon(
+    calc(50% - var(--portal-diamond)) 50%,
+    50% calc(50% - var(--portal-diamond)),
+    calc(50% + var(--portal-diamond)) 50%,
+    50% calc(50% + var(--portal-diamond))
+  );
+  transition: --portal-diamond 0.26s linear;
+}
+
+.portalButton:hover,
+.portalButton:focus-visible {
+  color: #fff;
+}
+
+.portalButton:hover::before,
+.portalButton:focus-visible::before {
+  --portal-diamond: 0px;
+}
+
+.portalButton:focus-visible {
+  outline: 2px solid var(--portal-orange);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animateFadeIn {
+    animation: none;
+  }
+
+  .portalButton,
+  .portalButton::before {
+    transition-duration: 0.01ms;
+  }
+}

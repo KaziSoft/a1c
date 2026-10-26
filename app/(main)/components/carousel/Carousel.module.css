@@ -1,0 +1,360 @@
+/* Layered gradient matching the recording: deep navy, brighter top-right glow */
+.backdrop {
+  background:
+    radial-gradient(60% 90% at 100% 0%, rgba(52, 110, 170, 0.55) 0%, rgba(52, 110, 170, 0) 60%),
+    radial-gradient(70% 80% at 45% 20%, rgba(14, 68, 120, 0.9) 0%, rgba(14, 68, 120, 0) 70%),
+    linear-gradient(180deg, #0b3a66 0%, #0a2f57 35%, #071f3f 70%, #04182f 100%);
+}
+
+/* Soft bottom/side vignette that sits above the canvas */
+.vignette {
+  background:
+    linear-gradient(180deg, rgba(4, 20, 42, 0) 55%, rgba(3, 16, 36, 0.75) 100%),
+    radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, 0) 60%, rgba(2, 12, 28, 0.35) 100%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Slide choreography (timings measured from the recording)            */
+/*                                                                     */
+/*   exit   : everything drifts right + fades, panel blurs out (~0.6s) */
+/*   gap    : ~0.6s of empty background                                */
+/*   enter  : title -> eyebrow -> image panel -> buttons (staggered)   */
+/*                                                                     */
+/* Each element declares its *exit* transition on the base state and   */
+/* its *enter* transition (with delay) on .slideActive.                */
+/* ------------------------------------------------------------------ */
+
+.slide {
+  pointer-events: none;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+.slideActive {
+  pointer-events: auto;
+}
+
+/* ---- Text ---- */
+
+.eyebrow,
+.title {
+  opacity: 0;
+  transform: translateX(17vw);
+  transition: opacity 380ms var(--ease-in), transform 620ms var(--ease-in);
+}
+
+.slideActive .title {
+  opacity: 1;
+  transform: none;
+  transition: opacity 750ms ease-out 600ms, transform 1000ms var(--ease-out) 600ms;
+}
+
+.slideActive .eyebrow {
+  opacity: 1;
+  transform: none;
+  transition: opacity 750ms ease-out 1050ms, transform 1000ms var(--ease-out) 1050ms;
+}
+
+.title {
+  font-family: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  text-shadow: 0 2px 18px rgba(2, 12, 28, 0.35);
+}
+
+.eyebrow {
+  font-family: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  text-shadow: 0 1px 10px rgba(2, 12, 28, 0.35);
+}
+
+/* ---- Buttons ---- */
+
+/* Each button rises out of a mask whose bottom edge is the button's own bottom edge */
+.ctaMask {
+  display: inline-block;
+  overflow: hidden;
+}
+
+/* Animatable diamond size for the hover fill (see .btn::before) */
+@property --r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  font-family: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  opacity: 0.3;
+  transform: translateY(110%);
+  transition:
+    transform 450ms var(--ease-in),
+    opacity 300ms var(--ease-in),
+    color 70ms linear 150ms,
+    border-color 120ms ease 60ms;
+}
+
+.slideActive .btn {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 900ms var(--ease-out) calc(1250ms + var(--bd, 0ms)),
+    opacity 600ms ease calc(1250ms + var(--bd, 0ms)),
+    color 70ms linear 150ms,
+    border-color 120ms ease 60ms;
+}
+
+.btnPrimary {
+  background-color: #77b02f;
+  border: 1.5px solid #77b02f;
+  color: #fff;
+}
+
+.btnSecondary {
+  background-color: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  color: #fff;
+}
+
+/* Hover fill, measured from the reference recording:
+   - the fill is "button rectangle minus a 45-degree diamond" (even-odd clip)
+   - the diamond is centred and its half-diagonal --r shrinks linearly to 0
+     (about 0.29s in), so white first appears as four small corner triangles
+   - on hover-out the diamond grows back linearly from the centre (about 0.36s)
+   The label changes colour right when the diamond shrinks past it (about half way).
+   --r starts at 7.6em, a little more than half of (width + height) for these
+   buttons, so the corners are fully covered by the diamond at rest. */
+.btn::before {
+  --r: 7.6em;
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #fff;
+  border-radius: inherit;
+  clip-path: polygon(
+    evenodd,
+    0 0, 100% 0, 100% 100%, 0 100%, 0 0,
+    50% calc(50% - var(--r)),
+    calc(50% + var(--r)) 50%,
+    50% calc(50% + var(--r)),
+    calc(50% - var(--r)) 50%,
+    50% calc(50% - var(--r)),
+    0 0
+  );
+  transition: --r 360ms linear;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  color: #77b02f;
+  border-color: #fff;
+  outline: none;
+}
+
+/* Re-declare the entry timings so hovering never cancels them; only colour is retimed */
+.slideActive .btn:hover,
+.slideActive .btn:focus-visible {
+  transition:
+    transform 900ms var(--ease-out) calc(1250ms + var(--bd, 0ms)),
+    opacity 600ms ease calc(1250ms + var(--bd, 0ms)),
+    color 70ms linear 110ms,
+    border-color 120ms ease 0ms;
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  --r: 0px;
+  transition-duration: 290ms;
+}
+
+/* ---- Angled image panel ---- */
+
+/* Pixel-exact rounded outlines are computed in the component from the slide's real
+   size and passed in as --clip-img / --clip-strip. The polygons are an SSR fallback. */
+.stripClip {
+  clip-path: var(--clip-strip, polygon(51.6% 0, 66% 0, 56% 42%, 43.3% 27%));
+}
+
+.imageClip {
+  clip-path: var(--clip-img, polygon(54.3% 0, 100% 0, 100% 100%, 61.2% 100%, 44.5% 31%));
+}
+
+/* Exit: fade out. The reveal clip is reset only after the fade has finished. */
+.panel {
+  opacity: 0;
+  clip-path: inset(0 0 30% 0);
+  transition: opacity 500ms var(--ease-in), clip-path 0s linear 500ms;
+}
+
+/* Enter: reveals from the top down while fading in */
+.slideActive .panel {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transition: opacity 550ms ease-out 1100ms, clip-path 1100ms cubic-bezier(0.22, 1, 0.36, 1) 1100ms;
+}
+
+/* Darker blue slab under the image: wide at first, settles to a thin edge */
+.slab {
+  background: linear-gradient(135deg, #3d68c8 0%, #223f8c 100%);
+  transform: translateX(-2.6%);
+  transition: transform 500ms var(--ease-in);
+}
+
+.slideActive .slab {
+  transform: translateX(-0.45%);
+  transition: transform 1300ms var(--ease-out) 1100ms;
+}
+
+/* White strip: starts thicker, tightens into place */
+.strip {
+  transform: translateX(-1.6%);
+  transition: transform 500ms var(--ease-in);
+}
+
+.slideActive .strip {
+  transform: translateX(0);
+  transition: transform 1200ms var(--ease-out) 1100ms;
+}
+
+/* Image: blurred + zoomed on exit and at the start of enter, then settles */
+.img {
+  filter: blur(10px);
+  transform: scale(1.12);
+  transition: filter 500ms var(--ease-in), transform 600ms var(--ease-in);
+}
+
+.slideActive .img {
+  filter: blur(0);
+  transform: scale(1);
+  transition: filter 1000ms ease-out 1100ms, transform 1800ms var(--ease-out) 1100ms;
+}
+
+/* ------------------------------------------------------------------ */
+/* Mosaic transition: translucent tiles flash across the slide on change */
+/* ------------------------------------------------------------------ */
+
+.mosaic {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.tile {
+  opacity: 0;
+  animation: tileFlash 800ms ease both;
+  animation-delay: var(--d, 0ms);
+}
+
+.tileLight {
+  background: rgba(190, 215, 200, 0.35);
+}
+
+.tileDark {
+  background: rgba(4, 24, 47, 0.45);
+}
+
+@keyframes tileFlash {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Radial Progress Ring Animation.
+   Runs once per slide; its end event advances the carousel,
+   so ring and autoplay can never drift apart. */
+.progressRing {
+  stroke-dashoffset: 50;
+  animation: ringFill 5s linear forwards; /* duration overridden inline from the interval prop */
+}
+
+.ringPaused {
+  animation-play-state: paused;
+}
+
+@keyframes ringFill {
+  0% {
+    stroke-dashoffset: 50;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Image box inside the panel: right-hand side on desktop... */
+.imgBox {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 58%;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile (< 640px): image on top at full strength, text underneath    */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 639px) {
+  .imgBox {
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: 100%;
+    height: 54%;
+  }
+
+  /* SSR fallbacks for the mobile outline (JS replaces them with exact paths) */
+  .stripClip {
+    clip-path: var(--clip-strip, polygon(0 57%, 100% 49.5%, 100% 44%, 0 50%));
+  }
+
+  .imageClip {
+    clip-path: var(--clip-img, polygon(0 0, 100% 0, 100% 46.5%, 0 54%));
+  }
+
+  /* The reveal runs top-down over the image area only */
+  .panel {
+    clip-path: inset(0 0 70% 0);
+  }
+
+  .slab {
+    display: none;
+  }
+
+  /* Mosaic: 4 x 4 instead of 8 x 3, so tiles stay roughly square on a tall slide */
+  .mosaic {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+
+  .tile:nth-child(n + 17) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .title,
+  .btn,
+  .btn::before,
+  .panel,
+  .slab,
+  .strip,
+  .img {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .tile {
+    animation: none;
+    display: none;
+  }
+}

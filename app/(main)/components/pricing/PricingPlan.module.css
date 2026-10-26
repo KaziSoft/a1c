@@ -1,0 +1,189 @@
+.section {
+  --green: #ff6600; /* Updated green primary to orange */
+  --green-dark: #1c3a1f;
+  --card-bg: #f3f2ee;
+  --ease: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ---------- "Our Best Plan" toggle badge (looping knob) ---------- */
+.badge {
+  position: relative;
+  display: inline-block;
+  width: 26px;
+  height: 12px;
+  border: 1.5px solid var(--green);
+  border-radius: 999px;
+}
+
+.badge::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 1px;
+  width: 14px;
+  border-radius: 999px;
+  background: var(--green);
+  animation: knob 2s ease-in-out infinite;
+}
+
+@keyframes knob {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+}
+
+/* ---------- Heading underline (brush stroke) ---------- */
+.underline {
+  position: absolute;
+  left: -1%;
+  top: 100%;
+  width: 97%;
+  height: 0.17em;
+  margin-top: -0.03em;
+  overflow: visible;
+  clip-path: inset(0 0 0 0);
+  animation: underlineSweep 3s linear infinite;
+}
+
+@keyframes underlineSweep {
+  0%,
+  33.33% {
+    clip-path: inset(0 0 0 0);
+  }
+  66.66% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ---------- View All Service button ---------- */
+@property --diamond {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 108px;
+}
+
+.viewAll {
+  --diamond-max: 6.75rem;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  overflow: hidden;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid #dcdfcc;
+  border-radius: 6px;
+  background: var(--green);
+  color: var(--green);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.26s linear;
+}
+
+.viewAll::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #fff;
+  --diamond: var(--diamond-max);
+  clip-path: polygon(
+    calc(50% - var(--diamond)) 50%,
+    50% calc(50% - var(--diamond)),
+    calc(50% + var(--diamond)) 50%,
+    50% calc(50% + var(--diamond))
+  );
+  transition: --diamond 0.26s linear;
+}
+
+.viewAll:hover,
+.viewAll:focus-visible {
+  color: #fff;
+}
+
+.viewAll:hover::before,
+.viewAll:focus-visible::before {
+  --diamond: 0px;
+}
+
+/* ---------- Plan card ---------- */
+.card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--card-bg);
+  transition: box-shadow 0.5s var(--ease);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--green-dark);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.5s var(--ease);
+}
+
+.card:hover {
+  box-shadow: 0 14px 34px rgba(28, 58, 31, 0.18);
+}
+
+.card:hover::before {
+  transform: scaleY(1);
+}
+
+.title,
+.feature,
+.cta {
+  --i: 0;
+  transition:
+    color 0.35s var(--ease),
+    border-color 0.35s var(--ease);
+  transition-delay: calc((4 - var(--i)) * 50ms);
+}
+
+.card:hover .title,
+.card:hover .feature,
+.card:hover .cta {
+  transition-delay: calc(var(--i) * 50ms);
+}
+
+.card:hover .title,
+.card:hover .feature {
+  color: #fff;
+}
+
+.card:hover .cta {
+  color: #fff;
+  border-color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge::after,
+  .underline {
+    animation: none;
+  }
+  .viewAll,
+  .viewAll::before,
+  .card,
+  .card::before,
+  .title,
+  .feature,
+  .cta {
+    transition-duration: 0.01ms;
+    transition-delay: 0s;
+  }
+}
