@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Outfit } from "next/font/google";
 import styles from "./HomeInternet.module.css";
+import FaqSection from "../faq-section/FaqSection";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -359,6 +360,7 @@ export default function HomeInternet({
           </div>
         </div>
       )}
-    </div>
+      <FaqSection/>
+    </div> 
   );
 }
