@@ -216,7 +216,7 @@ export default function PricingPlans() {
                         value={formData.customerName}
                         onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
                         className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 px-4 py-2.5 text-sm text-black transition-colors focus:border-[#ff6600] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff6600]/20"
-                        placeholder="John Doe"
+                        placeholder="Your Name"
                       />
                     </div>
                     <div>
@@ -227,7 +227,7 @@ export default function PricingPlans() {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 px-4 py-2.5 text-sm text-black transition-colors focus:border-[#ff6600] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff6600]/20"
-                        placeholder="john@example.com"
+                        placeholder="Your email"
                       />
                     </div>
                   </div>
