@@ -15,8 +15,6 @@ import {
   Target,
   UserPen,
   UserRoundCheck,
-  Tv,
-  ShieldCheck,
   CreditCard,
   MapPin,
   Headphones,
@@ -45,7 +43,6 @@ const iconClass = 'h-[18px] w-[18px]';
 const NAV_LINKS: NavLink[] = [
   { name: 'Home', href: '/' },
   { name: 'Home Internet', href: '/home-internet' },
-  
   {
     name: 'Support & Billing',
     footer: { label: 'Contact the help desk', href: '/support' },
@@ -78,7 +75,6 @@ const NAV_LINKS: NavLink[] = [
   },
   {
     name: 'About A1C',
-    // footer: { label: 'Contact the help desk', href: '/support' },
     items: [
       {
         name: 'About A1 Communication',
@@ -98,7 +94,6 @@ const NAV_LINKS: NavLink[] = [
         description: 'Report a fault or get help at any hour',
         icon: <UserRoundCheck className={iconClass} />,
       },
-      
     ],
   },
   { name: 'Contact', href: '/contact' },
