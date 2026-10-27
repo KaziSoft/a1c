@@ -43,36 +43,36 @@ const iconClass = 'h-[18px] w-[18px]';
 const NAV_LINKS: NavLink[] = [
   { name: 'Home', href: '/' },
   { name: 'Home Internet', href: '/home-internet' },
-  {
-    name: 'Support & Billing',
-    footer: { label: 'Contact the help desk', href: '/support' },
-    items: [
-      {
-        name: 'Pay Bill Online',
-        href: '/pay-bill',
-        description: 'Settle your invoice in a few taps',
-        icon: <CreditCard className={iconClass} />,
-      },
-      {
-        name: 'Coverage Area Map',
-        href: '/coverage',
-        description: 'Check whether we reach your address',
-        icon: <MapPin className={iconClass} />,
-      },
-      {
-        name: '24/7 Help Desk',
-        href: '/support',
-        description: 'Report a fault or get help at any hour',
-        icon: <Headphones className={iconClass} />,
-      },
-      {
-        name: 'Speed Test',
-        href: '/speedtest',
-        description: 'Measure your connection right now',
-        icon: <Gauge className={iconClass} />,
-      },
-    ],
-  },
+  // {
+  //   name: 'Support & Billing',
+  //   footer: { label: 'Contact the help desk', href: '/support' },
+  //   items: [
+  //     {
+  //       name: 'Pay Bill Online',
+  //       href: '/pay-bill',
+  //       description: 'Settle your invoice in a few taps',
+  //       icon: <CreditCard className={iconClass} />,
+  //     },
+  //     {
+  //       name: 'Coverage Area Map',
+  //       href: '/coverage',
+  //       description: 'Check whether we reach your address',
+  //       icon: <MapPin className={iconClass} />,
+  //     },
+  //     {
+  //       name: '24/7 Help Desk',
+  //       href: '/support',
+  //       description: 'Report a fault or get help at any hour',
+  //       icon: <Headphones className={iconClass} />,
+  //     },
+  //     {
+  //       name: 'Speed Test',
+  //       href: '/speedtest',
+  //       description: 'Measure your connection right now',
+  //       icon: <Gauge className={iconClass} />,
+  //     },
+  //   ],
+  // },
   {
     name: 'About A1C',
     items: [
