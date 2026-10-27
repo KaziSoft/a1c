@@ -1,0 +1,356 @@
+.section {
+  --canvas: #efeeea;
+  --forest: #1e3d1f;
+  --leaf: #ff6600;
+  --muted: #6f6f69;
+  --tile: #e2e1dc;
+  --crimson: #ff6600;
+  --blush: #ffd8c2;
+
+  background: var(--canvas);
+  color: var(--forest);
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  padding: 0 0 4rem 0;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  height: 40vh;
+  min-height: 16rem;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 61, 31, 0.65);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.heroTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 48rem) {
+  .heroTitle {
+    font-size: 3.25rem;
+  }
+}
+
+.heroDescription {
+  font-size: 1rem;
+  color: #e2e1dc;
+  max-width: 42rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Container Grid */
+.container {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 0;
+}
+
+@media (min-width: 56rem) {
+  .container {
+    grid-template-columns: 28rem 1fr;
+    gap: 3.5rem;
+  }
+}
+
+/* ---------- Unique Slanted Media Composition ---------- */
+
+.media {
+  position: relative;
+  width: 100%;
+  max-width: 27rem;
+  aspect-ratio: 420 / 460;
+  margin-inline: auto;
+}
+
+.cover {
+  object-fit: cover;
+}
+
+/* Abstract Backdrop Shape */
+.patternBackdrop {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 75%;
+  height: 80%;
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.15) 0%, rgba(30, 61, 31, 0.1) 100%);
+  border-radius: 2rem;
+  transform: rotate(-4deg);
+  z-index: 0;
+}
+
+/* Main Slanted Image Frame */
+.main {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  width: 70%;
+  height: 78%;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px -15px rgba(30, 61, 31, 0.25);
+  border: 4px solid #fff;
+  z-index: 2;
+  clip-path: polygon(0 0, 100% 0%, 85% 100%, 0% 100%);
+  transition: transform 0.4s ease;
+}
+
+.media:hover .main {
+  transform: scale(1.02);
+}
+
+/* Floating Secondary Image */
+.inset {
+  position: absolute;
+  bottom: 12%;
+  right: 4%;
+  width: 50%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 4px solid #fff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+  z-index: 3;
+  animation: floatCard 3.5s ease-in-out infinite;
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Bottom Highlight Card */
+.experienceCard {
+  position: absolute;
+  bottom: 2%;
+  left: 4%;
+  z-index: 4;
+  background: var(--forest);
+  color: #fff;
+  padding: 0.85rem 1.15rem;
+  border-radius: 1rem;
+  box-shadow: 0 12px 30px rgba(30, 61, 31, 0.25);
+  border-bottom: 4px solid var(--leaf);
+  max-width: 14rem;
+}
+
+.expNumber {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--leaf);
+}
+
+.expText {
+  display: block;
+  font-size: 0.65rem;
+  line-height: 1.3;
+  color: #e2e1dc;
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Copy ---------- */
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--leaf);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge {
+  position: relative;
+  display: inline-block;
+  width: 26px;
+  height: 12px;
+  border: 1.5px solid var(--leaf);
+  border-radius: 999px;
+}
+
+.badge::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 1px;
+  width: 14px;
+  border-radius: 999px;
+  background: var(--leaf);
+  animation: knob 2s ease-in-out infinite;
+}
+
+@keyframes knob {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(7px); }
+}
+
+.title {
+  margin: 0.5rem 0 0;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 56rem) {
+  .title {
+    font-size: 2.5rem;
+  }
+}
+
+.accent {
+  position: relative;
+  display: inline-block;
+  color: var(--leaf);
+}
+
+.underline {
+  position: absolute;
+  left: -1%;
+  top: 100%;
+  width: 97%;
+  height: 0.17em;
+  margin-top: -0.03em;
+  overflow: visible;
+  clip-path: inset(0 0 0 0);
+  animation: underlineSweep 3s linear infinite;
+}
+
+@keyframes underlineSweep {
+  0%, 33.33% { clip-path: inset(0 0 0 0); }
+  66.66% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+.lead {
+  max-width: 32rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.9;
+}
+
+/* ---------- Features ---------- */
+
+.features {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: 24rem;
+}
+
+@property --band {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.featureIcon {
+  --band: 0px;
+  --band-max: 4.5rem;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3.375rem;
+  height: 3.375rem;
+  border-radius: 0.25rem;
+  background: var(--tile);
+  color: var(--leaf);
+  transition: color 0.3s linear 0.05s;
+}
+
+.featureIcon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--leaf);
+  clip-path: polygon(
+    calc(0% - var(--band)) 100%,
+    calc(100% - var(--band)) 0%,
+    calc(100% + var(--band)) 0%,
+    var(--band) 100%
+  );
+  transition: --band 0.35s linear;
+}
+
+.feature:hover .featureIcon {
+  color: #fff;
+}
+
+.feature:hover .featureIcon::before {
+  --band: var(--band-max);
+}
+
+.featureTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.featureText {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge::after,
+  .underline,
+  .inset {
+    animation: none;
+  }
+  .featureIcon,
+  .featureIcon::before {
+    transition: none;
+  }
+}

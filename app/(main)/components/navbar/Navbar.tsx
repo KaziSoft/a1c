@@ -90,7 +90,7 @@ const NAV_LINKS: NavLink[] = [
       },
       {
         name: 'CEO & Founder Message',
-        href: '/ceo',
+        href: '/ceo-message',
         description: 'Report a fault or get help at any hour',
         icon: <UserRoundCheck className={iconClass} />,
       },

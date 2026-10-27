@@ -33,24 +33,6 @@ const RouterIcon = (
   </svg>
 );
 
-const MedalIcon = (
-  <svg
-    viewBox="0 0 48 48"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2.5}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-    width={34}
-    height={34}
-  >
-    <path d="M12 4l9 15M36 4l-9 15M18 4l6 10 6-10" />
-    <circle cx="24" cy="30" r="12" />
-    <path d="M24 24l1.9 3.9 4.3.6-3.1 3 .7 4.3-3.8-2-3.8 2 .7-4.3-3.1-3 4.3-.6z" />
-  </svg>
-);
-
 const FEATURES: Feature[] = [
   {
     title: "Fast Connected",
@@ -119,35 +101,37 @@ export default function AboutSection({
       />
 
       <div className={styles.container}>
-        {/* Left: image composition */}
+        {/* Left: Completely Different Split-Grid Image Composition */}
         <div className={styles.media}>
-          <span aria-hidden="true" className={styles.arch} />
+          <div className={styles.accentBox} />
 
+          {/* Main Tall Image Frame */}
           <div className={styles.main}>
             <Image
               src={mainImage}
               alt={mainImageAlt}
               fill
-              sizes="(min-width: 56rem) 20rem, 80vw"
+              sizes="(min-width: 56rem) 22rem, 80vw"
               className={styles.cover}
               priority
             />
           </div>
 
+          {/* Overlapping Bottom-Right Image Card */}
           <div className={styles.inset}>
             <Image
               src={insetImage}
               alt={insetImageAlt}
               fill
-              sizes="(min-width: 56rem) 12rem, 45vw"
+              sizes="(min-width: 56rem) 14rem, 45vw"
               className={styles.cover}
             />
           </div>
 
-          <div className={styles.experience}>
-            {MedalIcon}
-            <p className={styles.years}>{years} Years</p>
-            <p className={styles.yearsLabel}>Working Experience</p>
+          {/* Floating Minimalist Experience Tag */}
+          <div className={styles.experienceCard}>
+            <span className={styles.expNumber}>{years}+</span>
+            <span className={styles.expText}>Years of Trusted Network Excellence</span>
           </div>
         </div>
 
