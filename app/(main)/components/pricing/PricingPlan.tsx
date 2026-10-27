@@ -97,23 +97,15 @@ export default function PricingPlans() {
 
   return (
     <section className={`${styles.section} ${outfit.className} mx-auto w-full max-w-5xl px-4 py-16`}>
-      <header className="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#ff6600]">
-            <span aria-hidden="true" className={styles.badge} />
-            Our Best Plan
-          </p>
-          <h2 className="text-4xl font-bold text-[#1c3a1f] md:text-5xl">
-            Find Your <span className="text-[#ff6600]">Perfect Plan</span>
-          </h2>
-        </div>
-
-        {plans.length > 3 && (
-          <button type="button" onClick={() => setShowAll((prev) => !prev)} className={styles.viewAll}>
-            {showAll ? "Show Less Plans" : "View All Plans"}
-            <ArrowIcon />
-          </button>
-        )}
+      {/* Header section (Button removed from here) */}
+      <header className="mb-8">
+        <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#ff6600]">
+          <span aria-hidden="true" className={styles.badge} />
+          Our Best Plan
+        </p>
+        <h2 className="text-4xl font-bold text-[#1c3a1f] md:text-5xl">
+          Find Your <span className="text-[#ff6600]">Perfect Plan</span>
+        </h2>
       </header>
 
       {/* Plans List */}
@@ -157,6 +149,16 @@ export default function PricingPlans() {
           </article>
         ))}
       </div>
+
+      {/* View All Button - Bottom Center */}
+      {plans.length > 3 && (
+        <div className="mt-8 flex justify-center">
+          <button type="button" onClick={() => setShowAll((prev) => !prev)} className={styles.viewAll}>
+            {showAll ? "Show Less Plans" : "View All Plans"}
+            <ArrowIcon />
+          </button>
+        </div>
+      )}
 
       {/* Checkout Modal */}
       {selectedPlan && (
