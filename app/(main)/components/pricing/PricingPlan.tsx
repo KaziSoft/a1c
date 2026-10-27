@@ -49,7 +49,11 @@ export default function PricingPlans() {
     fetch("/api/plans")
       .then((res) => res.json())
       .then((data) => {
-        if (data.success) setPlans(data.data);
+        if (data.success) {
+          // Price low to high sorting
+          const sortedPlans = data.data.sort((a: Plan, b: Plan) => a.price - b.price);
+          setPlans(sortedPlans);
+        }
       })
       .finally(() => setLoading(false));
   }, []);
