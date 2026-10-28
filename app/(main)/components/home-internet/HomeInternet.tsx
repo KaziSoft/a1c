@@ -62,7 +62,7 @@ function CartIcon() {
 function HeroSection({
   title,
   description,
-  heroImage = "/img/bg-hero.jpeg",
+  heroImage = "/img/bg-hero.jpg",
 }: {
   title: string;
   description: string;
@@ -101,7 +101,7 @@ type HomeInternetProps = {
 
 export default function HomeInternet({
   personImage = "/img/person-laptop.jpg",
-  heroImage = "/img/bg-hero.jpeg",
+  heroImage = "/img/bg-hero.jpg",
 }: HomeInternetProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("popular");
   const [plans, setPlans] = useState<Plan[]>([]);
