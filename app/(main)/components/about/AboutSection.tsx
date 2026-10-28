@@ -58,7 +58,7 @@ function HeroSection({ title, description }: { title: string; description: strin
   return (
     <div className={styles.hero}>
       <Image
-        src="/img/bg-hero.jpeg"
+        src="/img/bg-hero.jpg"
         alt="About us background"
         fill
         className={styles.cover}
