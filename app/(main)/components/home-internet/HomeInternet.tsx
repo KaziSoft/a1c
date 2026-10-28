@@ -62,7 +62,7 @@ function CartIcon() {
 function HeroSection({
   title,
   description,
-  heroImage = "/img/bg-hero.jpg",
+  heroImage = "/img/bg-hero.jpeg",
 }: {
   title: string;
   description: string;
