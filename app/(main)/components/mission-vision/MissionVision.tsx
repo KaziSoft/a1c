@@ -68,9 +68,9 @@ function HeroSection({ title, description }: { title: string; description: strin
 
 export default function MissionVision({
   features = VALUES,
-  mainImage = "/img/about-main.jpg",
+  mainImage = "/img/target.jpg",
   mainImageAlt = "Network operations and fiber infrastructure",
-  insetImage = "/img/about-inset.jpg",
+  insetImage = "/img/vision.jpg",
   insetImageAlt = "Connected family enjoying internet",
 }: {
   features?: MissionFeature[];
