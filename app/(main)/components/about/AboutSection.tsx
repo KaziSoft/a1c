@@ -76,9 +76,9 @@ function HeroSection({ title, description }: { title: string; description: strin
 
 export default function AboutSection({
   features = FEATURES,
-  mainImage = "/img/about-main.jpg",
+  mainImage = "/img/about-long.png",
   mainImageAlt = "Woman using a laptop and VR headset in a modern pod chair",
-  insetImage = "/img/about-inset.jpg",
+  insetImage = "/img/about-wide.jpg",
   insetImageAlt = "Woman relaxing on a sofa with a phone",
   avatars = AVATARS,
   years = 7,
