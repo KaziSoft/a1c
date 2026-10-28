@@ -28,8 +28,8 @@ type CarouselProps = {
   className?: string;
 };
 
-const DEFAULT_PRIMARY: CarouselCta = { label: "Our Service", href: "#" };
-const DEFAULT_SECONDARY: CarouselCta = { label: "Get Now", href: "#" };
+const DEFAULT_PRIMARY: CarouselCta = { label: "Package Plans", href: "#price" };
+const DEFAULT_SECONDARY: CarouselCta = { label: "Get Now", href: "/home-internet" };
 
 // Drop your artwork in /public/carousel (or change the paths).
 const DEFAULT_SLIDES: CarouselSlide[] = [
