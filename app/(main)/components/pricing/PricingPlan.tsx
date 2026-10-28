@@ -96,7 +96,7 @@ export default function PricingPlans() {
   const displayedPlans = showAll ? plans : plans.slice(0, 3);
 
   return (
-    <section className={`${styles.section} ${outfit.className} mx-auto w-full max-w-5xl px-4 py-16`}>
+    <section id="price" className={`${styles.section} ${outfit.className} mx-auto w-full max-w-5xl px-4 py-16`}>
       {/* Header section */}
       <header className="mb-8">
         <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#ff6600]">

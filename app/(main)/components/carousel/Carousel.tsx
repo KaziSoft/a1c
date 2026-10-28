@@ -413,7 +413,7 @@ export default function Carousel({
               <div className="mt-[clamp(14px,2.2vw,40px)] flex flex-wrap items-center gap-[clamp(10px,1.2vw,22px)]">
                 <span className={styles.ctaMask}>
                   <a
-                    href={primary.href ?? "#"}
+                    href={primary.href ?? "#price"}
                     tabIndex={active ? 0 : -1}
                     className={`${BTN_BASE} ${styles.btnPrimary}`}
                   >
@@ -425,7 +425,7 @@ export default function Carousel({
                 </span>
                 <span className={styles.ctaMask}>
                   <a
-                    href={secondary.href ?? "#"}
+                    href={secondary.href ?? "/home-internet"}
                     tabIndex={active ? 0 : -1}
                     className={`${BTN_BASE} ${styles.btnSecondary}`}
                     style={{ ["--bd" as string]: "120ms" } as CSSProperties}
