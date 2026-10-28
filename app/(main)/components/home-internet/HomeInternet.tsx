@@ -101,7 +101,7 @@ type HomeInternetProps = {
 
 export default function HomeInternet({
   personImage = "/img/person-laptop.jpg",
-  heroImage = "/img/bg-hero.jpg",
+  heroImage = "/img/bg-hero.jpeg",
 }: HomeInternetProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("popular");
   const [plans, setPlans] = useState<Plan[]>([]);
