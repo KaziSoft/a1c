@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import styles from "./Carousel.module.css";
 
@@ -11,8 +10,11 @@ export type CarouselCta = {
 };
 
 export type CarouselSlide = {
+  /** Large heading. Rendered exactly as written (the small eyebrow above it is auto-uppercased). */
   title: string;
+  /** Small line above the heading. Defaults to the title. */
   eyebrow?: string;
+  /** Image shown in the angled panel on the right (e.g. a path in /public). */
   image: string;
   imageAlt?: string;
   primaryCta?: CarouselCta;
@@ -21,6 +23,7 @@ export type CarouselSlide = {
 
 type CarouselProps = {
   slides?: CarouselSlide[];
+  /** Autoplay delay in ms. Set to 0 to disable. */
   interval?: number;
   className?: string;
 };
@@ -28,6 +31,7 @@ type CarouselProps = {
 const DEFAULT_PRIMARY: CarouselCta = { label: "Our Service", href: "#" };
 const DEFAULT_SECONDARY: CarouselCta = { label: "Get Now", href: "#" };
 
+// Drop your artwork in /public/carousel (or change the paths).
 const DEFAULT_SLIDES: CarouselSlide[] = [
   {
     title: "YOUR INTERNET YOUR ULTIMATE WEAPON",
@@ -50,6 +54,10 @@ const DEFAULT_SLIDES: CarouselSlide[] = [
     imageAlt: "Mobile app screens",
   },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Animated network background (nodes drifting out of a vanishing point) */
+/* ------------------------------------------------------------------ */
 
 type Node = { x: number; y: number; z: number; icon: boolean; links: number[] };
 
@@ -92,8 +100,8 @@ function NetworkCanvas() {
     };
 
     const drawUser = (x: number, y: number, r: number, a: number) => {
-      ctx.strokeStyle = `rgba(190,210,235,${a})`;
-      ctx.fillStyle = `rgba(150,180,215,${a})`;
+      ctx.strokeStyle = `rgba(190,210,235,${a * 0.9})`;
+      ctx.fillStyle = `rgba(150,180,215,${a * 0.55})`;
       ctx.lineWidth = Math.max(1, r * 0.12);
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -115,6 +123,7 @@ function NetworkCanvas() {
 
       const pts = nodes.map(project);
 
+      // connections
       ctx.lineCap = "round";
       for (let i = 0; i < COUNT; i++) {
         const a = nodes[i];
@@ -131,6 +140,7 @@ function NetworkCanvas() {
         }
       }
 
+      // nodes
       for (let i = 0; i < COUNT; i++) {
         const n = nodes[i];
         const { sx, sy } = pts[i];
@@ -175,8 +185,12 @@ function NetworkCanvas() {
     };
   }, []);
 
-  return <canvas ref={ref} aria-hidden className="absolute inset-0 h-full w-full pointer-events-none" />;
+  return <canvas ref={ref} aria-hidden className="absolute inset-0 h-full w-full" />;
 }
+
+/* ------------------------------------------------------------------ */
+/* Slide buttons                                                       */
+/* ------------------------------------------------------------------ */
 
 const BTN_BASE = `${styles.btn} inline-flex items-center justify-center rounded-[3px] px-[clamp(14px,1.5vw,30px)] h-[clamp(30px,2.9vw,52px)] text-[clamp(11px,0.85vw,15px)] font-semibold whitespace-nowrap`;
 
@@ -197,8 +211,19 @@ function GemIcon() {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* Angled image panel geometry                                         */
+/*                                                                     */
+/* The outline (measured from the recording) is: top edge slanting     */
+/* down-left to a rounded vertex, then a long diagonal down-right to   */
+/* the bottom. A white strip hugs the upper-left edge and a darker     */
+/* slab peeks out under the lower-left edge. CSS clip-path polygons    */
+/* can't round corners, so we build pixel paths from the real size.    */
+/* ------------------------------------------------------------------ */
+
 type Pt = [number, number];
 
+/** Polygon path with per-vertex corner rounding (radius in px). First vertex must be sharp. */
 function roundedPath(pts: Pt[], radii: number[]): string {
   const n = pts.length;
   const f = (v: number) => v.toFixed(2);
@@ -230,10 +255,11 @@ function intersect(p: Pt, d: Pt, q: Pt, e: Pt): Pt {
   return [p[0] + s * d[0], p[1] + s * d[1]];
 }
 
+/** Narrow screens: image across the top, slanted bottom edge with the white strip under it. */
 function mobilePanelPaths(w: number, h: number) {
-  const left = 0.54 * h;
-  const right = left - 0.075 * h;
-  const t = 0.032 * h;
+  const left = 0.54 * h; // image bottom edge, left side
+  const right = left - 0.075 * h; // ...and right side (slants up towards the right)
+  const t = 0.032 * h; // strip thickness
   const img = roundedPath(
     [[0, 0], [w + 4, 0], [w + 4, right], [0, left]],
     [0, 0, 0, 0],
@@ -247,12 +273,13 @@ function mobilePanelPaths(w: number, h: number) {
 
 function panelPaths(w: number, h: number) {
   if (w < 640) return mobilePanelPaths(w, h);
-  const T0: Pt = [0.516 * w, 0];
-  const V: Pt = [0.433 * w, 0.27 * h];
-  const B: Pt = [0.612 * w, h];
-  const strip = 0.027 * w;
-  const r = 0.016 * w;
+  const T0: Pt = [0.516 * w, 0]; // top of the outer (white) edge
+  const V: Pt = [0.433 * w, 0.27 * h]; // outer vertex (before rounding)
+  const B: Pt = [0.612 * w, h]; // where the long diagonal meets the bottom
+  const strip = 0.027 * w; // horizontal thickness of the white strip
+  const r = 0.016 * w; // corner radius
 
+  // Image outline: same slanted edge pushed right by the strip thickness
   const innerTop: Pt = [T0[0] + strip, 0];
   const edge: Pt = [V[0] - T0[0], V[1] - T0[1]];
   const Vi = intersect(innerTop, edge, V, [B[0] - V[0], B[1] - V[1]]);
@@ -261,6 +288,7 @@ function panelPaths(w: number, h: number) {
     [0, 0, 0, 0, r],
   );
 
+  // White strip: runs from the top to the rounded vertex, tucked under the image
   const L: Pt = [V[0] + 0.25 * (B[0] - V[0]), V[1] + 0.25 * (B[1] - V[1])];
   const Q: Pt = [L[0] + 0.03 * w, L[1]];
   const stripPath = roundedPath(
@@ -271,7 +299,11 @@ function panelPaths(w: number, h: number) {
   return { img: `path('${img}')`, strip: `path('${stripPath}')` };
 }
 
-const MOSAIC_TILES = 24;
+/* ------------------------------------------------------------------ */
+/* Carousel                                                            */
+/* ------------------------------------------------------------------ */
+
+const MOSAIC_TILES = 24; // 8 columns x 3 rows, see .mosaic in the CSS
 
 export default function Carousel({
   slides = DEFAULT_SLIDES,
@@ -280,6 +312,7 @@ export default function Carousel({
 }: CarouselProps) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  // Mosaic transition: bump `flash` whenever the slide changes (not on first render).
   const [prevIndex, setPrevIndex] = useState(0);
   const [flash, setFlash] = useState(0);
   if (prevIndex !== index) {
@@ -290,6 +323,7 @@ export default function Carousel({
   const count = slides.length;
   const autoplay = interval > 0 && count > 1;
 
+  // Measure the slide so the panel outline can use true pixel geometry (rounded corners)
   const sectionRef = useRef<HTMLElement>(null);
   const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   useEffect(() => {
@@ -343,8 +377,8 @@ export default function Carousel({
             aria-label={`${i + 1} of ${count}`}
             aria-hidden={!active}
             className={`absolute inset-0 ${styles.slide} ${active ? styles.slideActive : ""}`}
-            style={{ pointerEvents: active ? "auto" : "none" }}
           >
+            {/* Angled image panel: slab (back) + white strip + image (front) */}
             <div aria-hidden={!s.imageAlt} className="pointer-events-none absolute inset-0">
               <div className={`absolute inset-0 ${styles.panel}`}>
                 <div className={`absolute inset-0 ${styles.slab} ${styles.imageClip}`} />
@@ -364,8 +398,8 @@ export default function Carousel({
               </div>
             </div>
 
-            {/* Text block with explicit pointer-events-auto */}
-            <div className="relative z-10 flex h-full w-[46%] flex-col justify-center pb-[clamp(28px,3.5vw,64px)] pl-[clamp(24px,3vw,72px)] pointer-events-auto max-sm:absolute max-sm:bottom-14 max-sm:left-0 max-sm:h-auto max-sm:w-full max-sm:justify-end max-sm:px-5 max-sm:pb-0">
+            {/* Text block */}
+            <div className="relative z-10 flex h-full w-[46%] flex-col justify-center pb-[clamp(28px,3.5vw,64px)] pl-[clamp(24px,3vw,72px)] max-sm:absolute max-sm:bottom-14 max-sm:left-0 max-sm:h-auto max-sm:w-full max-sm:justify-end max-sm:px-5 max-sm:pb-0">
               <p
                 className={`${styles.eyebrow} text-[clamp(9px,0.8vw,14px)] font-bold uppercase tracking-[0.22em] text-white`}
               >
@@ -378,29 +412,29 @@ export default function Carousel({
               </h2>
               <div className="mt-[clamp(14px,2.2vw,40px)] flex flex-wrap items-center gap-[clamp(10px,1.2vw,22px)]">
                 <span className={styles.ctaMask}>
-                  <Link
-                    href={primary.href ?? "#"}
+                  <a
+                    href={primary.href ?? "#price"}
                     tabIndex={active ? 0 : -1}
-                    className={`${BTN_BASE} ${styles.btnPrimary} relative z-20 pointer-events-auto`}
+                    className={`${BTN_BASE} ${styles.btnPrimary}`}
                   >
                     <span className="inline-flex items-center gap-2">
                       {primary.label}
                       <ChevronIcon />
                     </span>
-                  </Link>
+                  </a>
                 </span>
                 <span className={styles.ctaMask}>
-                  <Link
-                    href={secondary.href ?? "#"}
+                  <a
+                    href={secondary.href ?? "/home-internet"}
                     tabIndex={active ? 0 : -1}
-                    className={`${BTN_BASE} ${styles.btnSecondary} relative z-20 pointer-events-auto`}
+                    className={`${BTN_BASE} ${styles.btnSecondary}`}
                     style={{ ["--bd" as string]: "120ms" } as CSSProperties}
                   >
                     <span className="inline-flex items-center gap-2">
                       <GemIcon />
                       {secondary.label}
                     </span>
-                  </Link>
+                  </a>
                 </span>
               </div>
             </div>
@@ -408,6 +442,7 @@ export default function Carousel({
         );
       })}
 
+      {/* Mosaic transition overlay (re-mounted on every slide change) */}
       {flash > 0 && (
         <div key={flash} aria-hidden className={`pointer-events-none absolute inset-0 z-20 ${styles.mosaic}`}>
           {Array.from({ length: MOSAIC_TILES }, (_, t) => (
@@ -426,7 +461,7 @@ export default function Carousel({
             type="button"
             onClick={prev}
             aria-label="Previous slide"
-            className="absolute left-3 top-1/2 z-30 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white opacity-0 backdrop-blur transition hover:bg-white/25 focus-visible:opacity-100 group-hover:opacity-100 pointer-events-auto cursor-pointer"
+            className="absolute left-3 top-1/2 z-30 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white opacity-0 backdrop-blur transition hover:bg-white/20 focus-visible:opacity-100 group-hover:opacity-100"
           >
             <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
@@ -436,14 +471,15 @@ export default function Carousel({
             type="button"
             onClick={next}
             aria-label="Next slide"
-            className="absolute right-3 top-1/2 z-30 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white opacity-0 backdrop-blur transition hover:bg-white/25 focus-visible:opacity-100 group-hover:opacity-100 pointer-events-auto cursor-pointer"
+            className="absolute right-3 top-1/2 z-30 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white opacity-0 backdrop-blur transition hover:bg-white/20 focus-visible:opacity-100 group-hover:opacity-100"
           >
             <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
 
-          <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center space-x-2.5 rounded-full border border-white/10 bg-black/50 px-3 py-1.5 backdrop-blur-md sm:bottom-5 pointer-events-auto">
+          {/* Progress Indicators */}
+          <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center space-x-2.5 rounded-full border border-white/10 bg-black/50 px-3 py-1.5 backdrop-blur-md sm:bottom-5">
             {slides.map((s, i) => {
               const isActive = i === index;
               return (
@@ -453,7 +489,7 @@ export default function Carousel({
                   onClick={() => go(i)}
                   aria-label={`Go to slide ${i + 1}`}
                   aria-current={isActive}
-                  className="group relative flex h-5 w-5 items-center justify-center focus:outline-none cursor-pointer"
+                  className="group relative flex h-5 w-5 items-center justify-center focus:outline-none"
                 >
                   <svg className="h-full w-full -rotate-90 transform">
                     <circle cx="10" cy="10" r="7" className="fill-none stroke-white/20" strokeWidth="2" />
@@ -469,6 +505,7 @@ export default function Carousel({
                         strokeDasharray="44"
                         style={{
                           animationDuration: `${interval}ms`,
+                          // no autoplay: show the ring full and static
                           ...(autoplay ? {} : { animation: "none", strokeDashoffset: 0 }),
                         }}
                         onAnimationEnd={autoplay ? next : undefined}
